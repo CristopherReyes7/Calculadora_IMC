@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name=“theme-color” content=“#256ec2>
+	<meta name="MobileOptimized" content="width">
+	<meta name="HandheldFriendly" content="true">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<script src="https://kit.fontawesome.com/41bcea2ae3.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="style.css">
+	<link rel="manifest" href="./manifest.json">
+
+	<script type="text/javascript" src="./notificacion/push.min.js"></script>
+
+	<link rel="shortcut icon" href="img/IMC.png">
+
+	<title>IMC</title>
+</head>
+
+<body>
+	<header>
+		<h1>Calculadora de IMC: Indice de Masa Corporal</h1>
+	</header>
+
+	<!-- FORMULARIO HTML -->
+	<div class="inicio">
+		<p>Ingrese su peso (kg): <input type="number" id="kg"></p>
+		<p>Ingrese su altura (m): <input type="number" id="m"></p>
+		<button id="calc">Calcular</button>
+
+		<p>IMC: <span id="imc"></span></p>
+		<p>Lectura: <span id="lectura"></span></p>
+
+
+		<dl>
+			<dt> <b>El IMC genera unas lecturas que van de la siguiente forma: </b></dt> <br>
+			<li>Si el IMC es menor a 18.5 quiere decir que el peso es inferior al normal.</li>
+			<li>Si el IMC es mayor que 18.5 y menor a 24.0 quiere decir que el peso es normal.</li>
+			<li>Si el IMC es mayor que 25 y menor a 29.9 quiere decir que el peso superior al normal.</li>
+			<li>Si el IMC es mayor que 30 quiere decir que hay obesidad.</li>
+		</dl>
+	</div>
+
+
+	<script type="text/javascript">
+
+		window.onload = function () {
+			//if (!Push.Permission.GRANTED) {
+			Push.Permission.request();
+			//}
+		}
+
+		calc = document.getElementById("calc");
+		kg = document.getElementById("kg");
+		m = document.getElementById("m");
+		imc = document.getElementById("imc");
+		lectura = document.getElementById("lectura");
+
+		calc.onclick = function () {
+			if (kg.value != "" && m.value != "") {
+				imcx = (kg.value / (m.value * m.value));
+				imc.innerHTML = imcx.toFixed(2);
+				console.log(imcx);
+
+				if (imcx < 18.5) { lectura.innerHTML = "Peso inferior al normal"; }
+				else if (imcx >= 18.5 && imcx <= 24.9) { lectura.innerHTML = "Peso normal"; }
+				else if (imcx >= 25 && imcx <= 29.9) { lectura.innerHTML = "Peso superior al normal"; }
+				else if (imcx > 30) { lectura.innerHTML = "Obesidad"; }
+
+				//PUSH NOTIFICATION
+				Push.create('Calculadora de IMS', {
+					body: 'IMC: ' + imc.innerHTML + '\n' + 'Lectura: ' + lectura.innerHTML,
+					icon: 'img/IMC.png',
+					timeout: 8000,
+					vibrate: [100, 100, 100],
+					onClick: function () {
+						this.close();
+					}
+				});
+				//
+			} else {
+				alert("Debes ingresar peso y altura.")
+			}
+
+		};
+	</script>
+
+</body>
+
+<footer>
+	<p>&copy; 2022 Cristopher Reyes Flores. All rights reserved.</p>
+	<i class="fa-brands fa-facebook"></i>
+	<i class="fa-brands fa-instagram"></i>
+	<i class="fa-brands fa-twitter"></i>
+	<i class="fa-brands fa-whatsapp"></i>
+</footer>
+
+</html>
+
+<script src="./script.js"></script>
